@@ -15,7 +15,7 @@ describe("GET /room should reply with status code 200 and", () => {
 
     beforeAll(async () => {
         container = await new PostgreSqlContainer()
-            .withDatabase("getRoomstest_db")
+            .withDatabase("getRoomstest_db") // maybe randomize this
             .start();
         db = await startDatabase({
             host: container.getHost(),
@@ -24,12 +24,12 @@ describe("GET /room should reply with status code 200 and", () => {
             user: container.getUsername(),
             password: container.getPassword()
         });
-        server = startServer(db);
+        server = startServer(db, 3100);
         request = supertest.agent(server);
     });
 
     beforeEach(async () => {
-        await db("rooms").truncate();
+        await db("rooms").delete();
     });
 
     afterAll(async () => {

@@ -1,9 +1,12 @@
 import express from "express";
 import { Knex } from "knex";
+import createBookARoomHandler from "./useCases/bookARoom/handler";
 import createGetRoomsHandler from "./useCases/getAllRooms/handler";
 
-export function startServer(db: Knex) {
+export function startServer(db: Knex, port = 3000) {
     const app = express();
+
+    app.use(express.json());
 
     app.get("/", (req, res) => {
         //delete
@@ -13,7 +16,9 @@ export function startServer(db: Knex) {
 
     app.get("/room", createGetRoomsHandler(db));
 
-    return app.listen(3000, () => {
+    app.post("/booking", createBookARoomHandler(db));
+
+    return app.listen(port, () => {
         console.log("server started");
     });
 }
