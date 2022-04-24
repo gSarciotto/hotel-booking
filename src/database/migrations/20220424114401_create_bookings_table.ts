@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
             table.uuid("id").primary();
             table.text("email").notNullable();
             table.timestamp("bookingDate", { useTz: true }).notNullable();
+            table.boolean("isConfirmed").notNullable();
             table
                 .integer("roomId")
                 .notNullable()

@@ -16,6 +16,7 @@ export default function createBookARoomHandler(db: Knex): RequestHandler {
             .catch((err) => {
                 if (err instanceof RoomDoesntExist) {
                     response.status(404).send({ message: err.message });
+                    return;
                 }
                 console.error(err);
                 response.status(500).send();
