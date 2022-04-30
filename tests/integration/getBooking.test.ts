@@ -132,4 +132,10 @@ describe("GET /booking should", () => {
             }))
         ).toEqual(expect.arrayContaining(expectedBookings));
     });
+    it.skip("return an empty list if no booking exist", () => {
+        //todo
+    });
+    it.skip("reply with 404 if booking doesnt exist", () => {
+        // todo
+    });
 });

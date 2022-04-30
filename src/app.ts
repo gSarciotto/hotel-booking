@@ -3,6 +3,7 @@ import { Knex } from "knex";
 import createBookARoomHandler from "./useCases/bookARoom/handler";
 import createGetRoomsHandler from "./useCases/getAllRooms/handler";
 import createGetBookingHandler from "./useCases/getBooking/handler";
+import createGetInvoiceHandler from "./useCases/getInvoice/handler";
 
 export function startServer(db: Knex, port = 3000) {
     const app = express();
@@ -20,6 +21,10 @@ export function startServer(db: Knex, port = 3000) {
     app.get("/booking", createGetBookingHandler(db));
 
     app.post("/booking", createBookARoomHandler(db));
+
+    app.get("/invoice/:invoiceId", createGetInvoiceHandler(db));
+
+    app.get("/invoice", createGetInvoiceHandler(db));
 
     return app.listen(port, () => {
         console.log("server started");

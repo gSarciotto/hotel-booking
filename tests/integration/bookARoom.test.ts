@@ -37,7 +37,7 @@ describe("POST /booking should", () => {
     });
 
     beforeEach(async () => {
-        await db("bookings").truncate();
+        await db("bookings").delete();
     });
 
     afterAll(async () => {
