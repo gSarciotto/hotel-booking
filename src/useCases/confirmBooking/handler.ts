@@ -1,9 +1,14 @@
 import { RequestHandler } from "express";
+import { TokenExpiredError, verify } from "jsonwebtoken";
 import { Knex } from "knex";
 import { Booking } from "../../database/models/booking";
 import { confirmBookingAndCreateInvoice } from "./queries";
+import { DecodeTokenFunction } from "../../utils/jwt";
 
-export default function createConfirmBookingHandler(db: Knex): RequestHandler {
+export default function createConfirmBookingHandler(
+    db: Knex,
+    decodeToken: DecodeTokenFunction
+): RequestHandler {
     return (request, response) => {
         const bookingId: string | undefined = request.params?.bookingId;
         const uuidV4Regex =
@@ -13,11 +18,30 @@ export default function createConfirmBookingHandler(db: Knex): RequestHandler {
             response.status(400).json({ message: "Invalid booking id format" });
             return;
         }
-        confirmBookingAndCreateInvoice(db, { bookingId, price: 100 })
+        const token = request.query?.token;
+        if (typeof token !== "string") {
+            response.status(400).json({ message: "Request is missing token" });
+        }
+
+        decodeToken<{ email?: string }>(token as string, "some-Veryhard-secret")
+            .then((decodedToken) => {
+                if (!decodedToken.email) {
+                    response.status(400).json({ message: "Invalid token" });
+                    return;
+                }
+                return confirmBookingAndCreateInvoice(db, {
+                    bookingId,
+                    price: 100
+                });
+            })
             .then(() => {
                 response.status(200).send();
             })
             .catch((err) => {
+                if (err instanceof TokenExpiredError) {
+                    response.status(403).send({ message: "Invalid token" });
+                    return;
+                }
                 if (err instanceof BookingDoesntExist) {
                     response.status(404).send({
                         message:

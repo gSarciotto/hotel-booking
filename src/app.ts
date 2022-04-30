@@ -5,8 +5,9 @@ import createConfirmBookingHandler from "./useCases/confirmBooking/handler";
 import createGetRoomsHandler from "./useCases/getAllRooms/handler";
 import createGetBookingHandler from "./useCases/getBooking/handler";
 import createGetInvoiceHandler from "./useCases/getInvoice/handler";
+import { decodeToken } from "./utils/jwt";
 
-export function startServer(db: Knex, port = 3000) {
+export function startServer(db: Knex, port = 3000, decodeJwt = decodeToken) {
     const app = express();
 
     app.use(express.json());
@@ -27,7 +28,10 @@ export function startServer(db: Knex, port = 3000) {
 
     app.get("/invoice", createGetInvoiceHandler(db));
 
-    app.get("/booking/:bookingId/confirm", createConfirmBookingHandler(db));
+    app.get(
+        "/booking/:bookingId/confirm",
+        createConfirmBookingHandler(db, decodeJwt)
+    );
 
     return app.listen(port, () => {
         console.log("server started");

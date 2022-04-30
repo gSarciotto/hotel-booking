@@ -15,6 +15,7 @@ export async function confirmBookingAndCreateInvoice(
 }
 
 async function confirmBooking(db: Knex, bookingId: Booking["id"]) {
+    // could do email validation from the email in the token
     const updatedRows = await db<Booking>("bookings")
         .update("isConfirmed", true)
         .where("id", bookingId)
