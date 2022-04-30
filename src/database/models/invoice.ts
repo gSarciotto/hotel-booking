@@ -2,6 +2,6 @@ import { Booking } from "./booking";
 
 export interface Invoice {
     id: string;
-    price: number;
+    price: string;
     bookingId: Booking["id"];
 }

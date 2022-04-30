@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
             table
                 .uuid("bookingId")
                 .notNullable()
-                .unique()
+                .unique() // actually may not be unique?
                 .references("id")
                 .inTable("bookings");
         });

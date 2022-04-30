@@ -72,7 +72,7 @@ describe("GET /invoice should", () => {
                 existingBookings.map((booking) => ({
                     id: v4(),
                     bookingId: booking.id,
-                    price: pricePerDay
+                    price: pricePerDay.toFixed(2)
                 }))
             )
             .returning("*");
@@ -116,7 +116,7 @@ describe("GET /invoice should", () => {
                 existingBookings.map((booking) => ({
                     id: v4(),
                     bookingId: booking.id,
-                    price: pricePerDay
+                    price: pricePerDay.toFixed(2)
                 }))
             )
             .returning("*");
