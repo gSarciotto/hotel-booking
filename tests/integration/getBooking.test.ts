@@ -56,7 +56,7 @@ describe("GET /booking should", () => {
         });
         await db("rooms").insert(existingRoom);
         await db("bookings").insert(existingBookings);
-        server = startServer(db, 3300);
+        server = startServer({ db, port: 3300 });
         request = supertest.agent(server);
     });
 

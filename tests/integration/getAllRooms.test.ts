@@ -24,7 +24,7 @@ describe("GET /room should reply with status code 200 and", () => {
             user: container.getUsername(),
             password: container.getPassword()
         });
-        server = startServer(db, 3100);
+        server = startServer({ db, port: 3100 });
         request = supertest.agent(server);
     });
 

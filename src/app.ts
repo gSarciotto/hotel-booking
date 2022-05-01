@@ -1,28 +1,36 @@
 import express from "express";
 import { Knex } from "knex";
+import { Booking } from "./database/models/booking";
 import createBookARoomHandler from "./useCases/bookARoom/handler";
 import createConfirmBookingHandler from "./useCases/confirmBooking/handler";
 import createGetRoomsHandler from "./useCases/getAllRooms/handler";
 import createGetBookingHandler from "./useCases/getBooking/handler";
 import createGetInvoiceHandler from "./useCases/getInvoice/handler";
-import { decodeToken } from "./utils/jwt";
+import {
+    decodeToken as defaultDecodeToken,
+    DecodeTokenFunction
+} from "./utils/jwt";
 
-export function startServer(db: Knex, port = 3000, decodeJwt = decodeToken) {
+export function startServer({
+    db,
+    port = 3000,
+    decodeJwt = defaultDecodeToken,
+    publishNewBooking = () => Promise.resolve()
+}: {
+    db: Knex;
+    port: number;
+    decodeJwt?: DecodeTokenFunction;
+    publishNewBooking?: (newBooking: Booking) => Promise<void>;
+}) {
     const app = express();
 
     app.use(express.json());
-
-    app.get("/", (req, res) => {
-        //delete
-        console.log("hello world");
-        res.status(200).send("hello world");
-    });
 
     app.get("/room", createGetRoomsHandler(db));
 
     app.get("/booking", createGetBookingHandler(db));
 
-    app.post("/booking", createBookARoomHandler(db));
+    app.post("/booking", createBookARoomHandler(db, publishNewBooking));
 
     app.get("/invoice/:invoiceId", createGetInvoiceHandler(db));
 

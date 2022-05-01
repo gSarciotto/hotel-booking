@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 export function decodeToken<PayloadType>(
     token: string,
@@ -10,6 +10,18 @@ export function decodeToken<PayloadType>(
                 reject(err);
             }
             resolve(decoded as PayloadType);
+        });
+    });
+}
+
+async function signToken(email: string, jwtSecret: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        sign({ email }, jwtSecret, {}, (err, token) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(token ? token : "");
+            }
         });
     });
 }

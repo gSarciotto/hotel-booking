@@ -19,6 +19,9 @@ describe("POST /booking should", () => {
         id: 10,
         name: "some room name"
     };
+    const publishNewBookingMock = jest.fn((booking: Booking) =>
+        Promise.resolve()
+    );
 
     beforeAll(async () => {
         container = await new PostgreSqlContainer()
@@ -32,12 +35,17 @@ describe("POST /booking should", () => {
             password: container.getPassword()
         });
         await db("rooms").insert(existingRoom);
-        server = startServer(db, 3200);
+        server = startServer({
+            db,
+            port: 3200,
+            publishNewBooking: publishNewBookingMock
+        });
         request = supertest.agent(server);
     });
 
     beforeEach(async () => {
         await db("bookings").delete();
+        publishNewBookingMock.mockClear();
     });
 
     afterAll(async () => {
@@ -52,7 +60,6 @@ describe("POST /booking should", () => {
             email: "some_email@email.com",
             bookingDate: new Date("1995-12-16T01:00:00.000+02:00").toISOString()
         };
-        console.log(newBooking.bookingDate);
         const response = await request
             .post("/booking")
             .set("Content-Type", "application/json")
@@ -89,6 +96,25 @@ describe("POST /booking should", () => {
         expect(new Date(savedBookings[0].bookingDate).getTime()).toBe(
             new Date(newBooking.bookingDate).getTime()
         );
+    });
+
+    it("publish message to send confirmation email", async () => {
+        const newBooking = {
+            roomId: existingRoom.id,
+            email: "some_email@email.com",
+            bookingDate: new Date("1995-12-16T01:00:00.000+02:00").toISOString()
+        };
+        await request
+            .post("/booking")
+            .set("Content-Type", "application/json")
+            .send(newBooking);
+
+        const savedNewBooking = await db<Booking>("bookings")
+            .select("*")
+            .first();
+        expect(savedNewBooking).toBeDefined();
+        expect(publishNewBookingMock).toHaveBeenCalled();
+        expect(publishNewBookingMock.mock.calls[0][0]).toEqual(savedNewBooking);
     });
 
     it.skip("validate request body and return 400 if it is invalid", async () => {

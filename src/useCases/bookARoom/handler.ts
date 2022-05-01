@@ -5,11 +5,14 @@ import { createANewBooking } from "./queries";
 
 type NewBookingRequest = Pick<Booking, "bookingDate" | "email" | "roomId">;
 
-export default function createBookARoomHandler(db: Knex): RequestHandler {
+export default function createBookARoomHandler(
+    db: Knex,
+    publishNewBooking: (newBooking: Booking) => Promise<void>
+): RequestHandler {
     return (request, response) => {
-        //validate -> query for the room?
         const newBookingData = request.body as NewBookingRequest;
         createANewBooking(db, newBookingData)
+            .then(publishNewBooking)
             .then(() => {
                 response.status(201).send();
             })
@@ -21,7 +24,6 @@ export default function createBookARoomHandler(db: Knex): RequestHandler {
                 console.error(err);
                 response.status(500).send();
             });
-        // publish to a queue to do the confirmation email?
     };
 }
 

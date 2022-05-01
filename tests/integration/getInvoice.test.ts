@@ -28,7 +28,7 @@ describe("GET /invoice should", () => {
             user: container.getUsername(),
             password: container.getPassword()
         });
-        server = startServer(db, 3400);
+        server = startServer({ db, port: 3400 });
         request = supertest.agent(server);
     });
 

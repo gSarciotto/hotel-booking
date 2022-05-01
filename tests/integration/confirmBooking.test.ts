@@ -42,7 +42,7 @@ describe("GET /booking/:id/confirm should", () => {
             password: container.getPassword()
         });
         await db("rooms").insert(existingRoom);
-        server = startServer(db, 3600);
+        server = startServer({ db, port: 3600 });
         request = supertest.agent(server);
     });
 
@@ -188,8 +188,14 @@ describe("GET /booking/:id/confirm should", () => {
     });
 
     it("reply with 403 is supplied token is expired", async () => {
-        server = startServer(db, 3600, () => {
-            return Promise.reject(new TokenExpiredError("expired", new Date()));
+        server = startServer({
+            db,
+            port: 3600,
+            decodeJwt: () => {
+                return Promise.reject(
+                    new TokenExpiredError("expired", new Date())
+                );
+            }
         });
         request = supertest.agent(server);
         const jwtSecret = "some-Veryhard-secret";
