@@ -39,6 +39,6 @@ export function startServer({
     );
 
     return app.listen(port, () => {
-        console.log("server started");
+        console.log(`server started on port ${port}`);
     });
 }

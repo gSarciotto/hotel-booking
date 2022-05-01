@@ -13,7 +13,7 @@ import { publishMessageToQueue, startRabbitMQ } from "../../src/rabbit/rabbit";
 import { createSendBookingConfirmationConsumer } from "../../src/useCases/sendConfirmationEmail/consumer";
 
 describe("sendConfirmationEmail consumer from new bookings queue should", () => {
-    jest.setTimeout(1000 * 10); //10s
+    jest.setTimeout(1000 * 15); //15s
     let postgresContainer: StartedPostgreSqlContainer;
     let rabbitMQContainer: StartedTestContainer;
     let db: Knex;
