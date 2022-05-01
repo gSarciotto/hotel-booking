@@ -11,7 +11,6 @@ import { sendEmail } from "./utils/email";
 import { decodeToken, signToken as signJwt } from "./utils/jwt";
 
 const env = getEnvironment();
-console.log(env);
 
 let db: Knex;
 let rabbitMQConnection: Connection;
@@ -44,7 +43,7 @@ startDatabase({
         await createSendBookingConfirmationConsumer({
             channel: rabbitMQChannel,
             db,
-            host: "localhost:3000",
+            host: `localhost:${env.SERVER_PORT}`,
             sendEmail,
             signToken: (email: string) => signJwt(email, env.JWT_SECRET)
         });

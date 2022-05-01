@@ -29,9 +29,9 @@ export function startServer({
 
     app.post("/booking", createBookARoomHandler(db, publishNewBooking));
 
-    app.get("/invoice/:invoiceId", createGetInvoiceHandler(db));
-
     app.get("/invoice", createGetInvoiceHandler(db));
+
+    app.get("/invoice/:invoiceId", createGetInvoiceHandler(db));
 
     app.get(
         "/booking/:bookingId/confirm",
