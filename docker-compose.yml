@@ -1,0 +1,13 @@
+services:
+  postgres-container:
+    image: postgres:13.3-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bobw-test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  rabbitmq-container:
+    image: rabbitmq
+    ports:
+      - "5672:5672"

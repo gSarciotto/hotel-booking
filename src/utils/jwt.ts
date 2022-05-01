@@ -14,7 +14,10 @@ export function decodeToken<PayloadType>(
     });
 }
 
-async function signToken(email: string, jwtSecret: string): Promise<string> {
+export async function signToken(
+    email: string,
+    jwtSecret: string
+): Promise<string> {
     return new Promise((resolve, reject) => {
         sign({ email }, jwtSecret, {}, (err, token) => {
             if (err) {
@@ -25,5 +28,3 @@ async function signToken(email: string, jwtSecret: string): Promise<string> {
         });
     });
 }
-
-export type DecodeTokenFunction = typeof decodeToken;

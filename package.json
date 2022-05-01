@@ -7,7 +7,9 @@
     "start:dev": "ts-node-dev --respawn --rs src/index.ts",
     "build": "tsc -p ./tsconfig.json",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "start-containers": "docker-compose up -d",
+    "stop-containers": "docker-compose down"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +38,7 @@
   },
   "dependencies": {
     "amqplib": "^0.8.0",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "knex": "^1.0.7",

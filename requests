@@ -1,0 +1,11 @@
+GET /room
+curl localhost:3000/room
+
+POST /booking
+curl -H "Content-type: application/json" -X POST --data '{"roomId": 1, "email": "some-email@email.com", "bookingDate": "2022-05-01T12:15:16.994Z" }' localhost:3000/booking
+
+GET /booking
+curl localhost:3000/booking
+
+GET /invoice
+curl localhost:3000/invoice

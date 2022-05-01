@@ -28,7 +28,7 @@ describe("GET /booking/:id/confirm should", () => {
         email: "email_1@email.com",
         isConfirmed: false
     };
-    const jwtSecret = "some-Veryhard-secret";
+    const jwtSecret = "some-secret";
 
     beforeAll(async () => {
         container = await new PostgreSqlContainer()
@@ -198,7 +198,7 @@ describe("GET /booking/:id/confirm should", () => {
             }
         });
         request = supertest.agent(server);
-        const jwtSecret = "some-Veryhard-secret";
+        const jwtSecret = "some-secret";
         await db("bookings").insert(unconfirmedBooking);
         const expiredToken = sign(
             {

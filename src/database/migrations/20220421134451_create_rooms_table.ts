@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+import existingRooms from "../../utils/rooms";
 
 export async function up(knex: Knex): Promise<void> {
     const roomsTableExists = await knex.schema.hasTable("rooms");
@@ -7,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
             table.increments("id").primary();
             table.text("name");
         });
+        await knex("rooms").insert(existingRooms);
     }
 }
 

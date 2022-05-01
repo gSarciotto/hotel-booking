@@ -1,13 +1,12 @@
 import { RequestHandler } from "express";
-import { TokenExpiredError, verify } from "jsonwebtoken";
+import { TokenExpiredError } from "jsonwebtoken";
 import { Knex } from "knex";
 import { Booking } from "../../database/models/booking";
 import { confirmBookingAndCreateInvoice } from "./queries";
-import { DecodeTokenFunction } from "../../utils/jwt";
 
 export default function createConfirmBookingHandler(
     db: Knex,
-    decodeToken: DecodeTokenFunction
+    decodeToken: <T>(token: string) => Promise<T>
 ): RequestHandler {
     return (request, response) => {
         const bookingId: string | undefined = request.params?.bookingId;
@@ -23,7 +22,7 @@ export default function createConfirmBookingHandler(
             response.status(400).json({ message: "Request is missing token" });
         }
 
-        decodeToken<{ email?: string }>(token as string, "some-Veryhard-secret")
+        decodeToken<{ email?: string }>(token as string)
             .then((decodedToken) => {
                 if (!decodedToken.email) {
                     response.status(400).json({ message: "Invalid token" });

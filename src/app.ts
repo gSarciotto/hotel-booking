@@ -6,20 +6,17 @@ import createConfirmBookingHandler from "./useCases/confirmBooking/handler";
 import createGetRoomsHandler from "./useCases/getAllRooms/handler";
 import createGetBookingHandler from "./useCases/getBooking/handler";
 import createGetInvoiceHandler from "./useCases/getInvoice/handler";
-import {
-    decodeToken as defaultDecodeToken,
-    DecodeTokenFunction
-} from "./utils/jwt";
+import { decodeToken as defaultDecodeToken } from "./utils/jwt";
 
 export function startServer({
     db,
     port = 3000,
-    decodeJwt = defaultDecodeToken,
+    decodeJwt = (token: string) => defaultDecodeToken(token, "some-secret"),
     publishNewBooking = () => Promise.resolve()
 }: {
     db: Knex;
     port: number;
-    decodeJwt?: DecodeTokenFunction;
+    decodeJwt?: <T>(token: string) => Promise<T>;
     publishNewBooking?: (newBooking: Booking) => Promise<void>;
 }) {
     const app = express();
